@@ -135,6 +135,8 @@ class InlineUpdaterClass {
     this.options.notifyBeforeDownload =
       opts?.notifyBeforeDownload ?? this.options.notifyBeforeDownload;
 
+    assert(this.options.user, "user is required");
+
     assert(this.options.repo, "repo is required");
 
     assert(
@@ -171,9 +173,7 @@ class InlineUpdaterClass {
       this.checkForUpdates();
     }, ms(this.options.updateInterval!));
 
-    if (this.options.notifyBeforeApply) {
-      electronUpdater.on("update-downloaded", this.onUpdateDownloaded);
-    }
+    electronUpdater.on("update-downloaded", this.onUpdateDownloaded);
 
     return true;
   }
@@ -298,6 +298,8 @@ class InlineUpdaterClass {
     releaseDate: Date,
     updateURL: string
   ) => {
+    if (!this.options.notifyBeforeApply) return;
+
     console.log("update-downloaded", [
       event,
       releaseNotes,
