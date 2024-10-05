@@ -94,5 +94,5 @@ describe("Check fetching download url", () => {
       },
       electron as any
     ).checkForUpdates();
-  });
+  }, 20000);
 });
