@@ -59,6 +59,7 @@ class InlineUpdaterClass {
   releaseNotes: string = "";
   private downloadUrl: string = "";
   setupComplete: boolean = false;
+  isPromptOn = false;
 
   options: IUpdateElectronAppOptions = {
     updateInterval: "10 minutes",
@@ -270,6 +271,8 @@ class InlineUpdaterClass {
   }
 
   private promptDownload() {
+    if (this.isPromptOn) return;
+
     const electronUpdater = this.electronInstance.autoUpdater;
 
     const dialogOpts: MessageBoxOptions = {
@@ -280,9 +283,12 @@ class InlineUpdaterClass {
       detail: `A new version have been released.\n\n${this.releaseNotes}\n`,
     };
 
+    this.isPromptOn = true;
+
     this.electronInstance.dialog
       .showMessageBox(dialogOpts)
       .then(({ response }) => {
+        this.isPromptOn = false;
         if (response === 0) {
           electronUpdater.checkForUpdates();
         } else {
