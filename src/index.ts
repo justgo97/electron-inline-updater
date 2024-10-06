@@ -321,6 +321,7 @@ class InlineUpdaterClass {
       message: this.fetchedVersion,
       detail: `A new version have been released.\n\n${this.releaseNotes}\n`,
       defaultId: 1,
+      cancelId: 1,
     };
 
     this.isPromptOn = true;
@@ -362,6 +363,7 @@ class InlineUpdaterClass {
       detail:
         "A new version has been downloaded. Restart the application to apply the updates.",
       defaultId: 1,
+      cancelId: 1,
     };
 
     this.electronInstance.dialog
