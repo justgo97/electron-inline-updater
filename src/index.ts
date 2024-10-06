@@ -48,6 +48,12 @@ interface IUpdateElectronAppOptions {
    *                             prompted to whether start downloading the update or not.
    */
   notifyBeforeDownload?: boolean;
+
+  /**
+   * @param {Boolean} checkOnStart Defaults to `true`.  When enabled the app will
+   *                            check for available updates as soon the app starts.
+   */
+  checkOnStart?: boolean;
 }
 
 const supportedPlatforms = ["darwin", "win32"];
@@ -67,6 +73,7 @@ class InlineUpdaterClass {
     updateInterval: "10 minutes",
     notifyBeforeApply: true,
     notifyBeforeDownload: true,
+    checkOnStart: true,
   };
 
   electronInstance!: typeof electron;
@@ -137,6 +144,7 @@ class InlineUpdaterClass {
       opts?.notifyBeforeApply ?? this.options.notifyBeforeApply;
     this.options.notifyBeforeDownload =
       opts?.notifyBeforeDownload ?? this.options.notifyBeforeDownload;
+    this.options.checkOnStart = opts?.checkOnStart ?? this.options.checkOnStart;
 
     assert(this.options.user, "user is required");
 
@@ -177,7 +185,10 @@ class InlineUpdaterClass {
       this.updateTimer = undefined;
     }
 
-    this.checkForUpdates();
+    if (this.options.checkOnStart) {
+      this.checkForUpdates();
+    }
+
     this.updateTimer = setInterval(() => {
       this.checkForUpdates();
     }, ms(this.options.updateInterval!));
