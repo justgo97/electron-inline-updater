@@ -60,6 +60,7 @@ class InlineUpdaterClass {
   private downloadUrl: string = "";
   setupComplete: boolean = false;
   isPromptOn = false;
+  isDownloading = false;
 
   options: IUpdateElectronAppOptions = {
     updateInterval: "10 minutes",
@@ -174,12 +175,19 @@ class InlineUpdaterClass {
       this.checkForUpdates();
     }, ms(this.options.updateInterval!));
 
+    electronUpdater.on("update-available", () => {
+      console.log("update-available; downloading...");
+      this.isDownloading = true;
+    });
+
     electronUpdater.on("update-downloaded", this.onUpdateDownloaded);
 
     return true;
   }
 
   async checkForUpdates() {
+    if (this.isDownloading) return;
+
     const electronUpdater = this.electronInstance.autoUpdater;
 
     if (this.pauseUpdates) return false;
