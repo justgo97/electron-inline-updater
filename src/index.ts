@@ -61,6 +61,7 @@ class InlineUpdaterClass {
   setupComplete: boolean = false;
   isPromptOn = false;
   isDownloading = false;
+  updateTimer?: NodeJS.Timer;
 
   options: IUpdateElectronAppOptions = {
     updateInterval: "10 minutes",
@@ -170,8 +171,14 @@ class InlineUpdaterClass {
   private initUpdater() {
     const electronUpdater = this.electronInstance.autoUpdater;
 
+    // Clear up any previous timer we have initiated in case of a reconfiguration
+    if (this.updateTimer) {
+      clearInterval(this.updateTimer);
+      this.updateTimer = undefined;
+    }
+
     this.checkForUpdates();
-    setInterval(() => {
+    this.updateTimer = setInterval(() => {
       this.checkForUpdates();
     }, ms(this.options.updateInterval!));
 
@@ -183,6 +190,19 @@ class InlineUpdaterClass {
     electronUpdater.on("update-downloaded", this.onUpdateDownloaded);
 
     return true;
+  }
+
+  setUpdateTimer(state: boolean) {
+    if (state) {
+      if (!this.updateTimer) {
+        this.updateTimer = setInterval(() => {
+          this.checkForUpdates();
+        }, ms(this.options.updateInterval!));
+      }
+    } else {
+      clearInterval(this.updateTimer);
+      this.updateTimer = undefined;
+    }
   }
 
   async checkForUpdates() {
