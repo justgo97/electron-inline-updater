@@ -1,6 +1,6 @@
 {
   "name": "electron-inline-updater",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A module that allows electron Apps to fetch updates from Github without needing an external server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
