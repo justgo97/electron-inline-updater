@@ -203,19 +203,6 @@ class InlineUpdaterClass {
     return true;
   }
 
-  setUpdateTimer(state: boolean) {
-    if (state) {
-      if (!this.updateTimer) {
-        this.updateTimer = setInterval(() => {
-          this.checkForUpdates();
-        }, ms(this.options.updateInterval!));
-      }
-    } else {
-      clearInterval(this.updateTimer);
-      this.updateTimer = undefined;
-    }
-  }
-
   async checkForUpdates() {
     if (this.isDownloading) return;
 
@@ -372,6 +359,19 @@ class InlineUpdaterClass {
         if (response === 0) this.electronInstance.autoUpdater.quitAndInstall();
       });
   };
+
+  setUpdateTimer(state: boolean) {
+    if (state) {
+      if (!this.updateTimer) {
+        this.updateTimer = setInterval(() => {
+          this.checkForUpdates();
+        }, ms(this.options.updateInterval!));
+      }
+    } else {
+      clearInterval(this.updateTimer);
+      this.updateTimer = undefined;
+    }
+  }
 
   getInstance(
     options?: IUpdateElectronAppOptions,
