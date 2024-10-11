@@ -383,13 +383,11 @@ class InlineUpdaterClass {
     return this;
   }
 
-  static createInstance(
-    electronOpts?: typeof electron
-  ): (
+  static createInstance(): (
     options?: IUpdateElectronAppOptions,
     electronOpts?: typeof electron
   ) => InlineUpdaterClass {
-    const newClass = new InlineUpdaterClass(electronOpts);
+    const newClass = new InlineUpdaterClass();
     return newClass.getInstance.bind(newClass);
   }
 }
