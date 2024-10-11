@@ -375,7 +375,7 @@ class InlineUpdaterClass {
     }
 
     if (!this.setupComplete) {
-      this.setup(this.options);
+      this.setup(options);
     } else {
       this.validateInput(options);
     }
