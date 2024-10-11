@@ -78,14 +78,7 @@ class InlineUpdaterClass {
 
   electronInstance!: typeof electron;
 
-  constructor(
-    opts?: IUpdateElectronAppOptions,
-    electronOpts?: typeof electron
-  ) {
-    if (opts) {
-      this.options = { ...opts };
-    }
-
+  constructor(electronOpts?: typeof electron) {
     if (electronOpts) {
       this.electronInstance = electronOpts;
     } else {
@@ -391,13 +384,12 @@ class InlineUpdaterClass {
   }
 
   static createInstance(
-    options?: IUpdateElectronAppOptions,
     electronOpts?: typeof electron
   ): (
     options?: IUpdateElectronAppOptions,
     electronOpts?: typeof electron
   ) => InlineUpdaterClass {
-    const newClass = new InlineUpdaterClass(options, electronOpts);
+    const newClass = new InlineUpdaterClass(electronOpts);
     return newClass.getInstance.bind(newClass);
   }
 }
