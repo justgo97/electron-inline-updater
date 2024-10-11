@@ -2,6 +2,7 @@ import { inlineUpdater } from "../src/index";
 import os, { tmpdir } from "os";
 import fs from "fs";
 import path from "path";
+import fetchMock from "jest-fetch-mock";
 
 const electron = {
   app: {
@@ -90,13 +91,41 @@ describe("updateInterval", () => {
   });
 });
 
+// Enable fetch mocks
+beforeAll(() => {
+  fetchMock.enableMocks();
+});
+
 describe("Check fetching download url", () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
+
   test("must return the expected url", (done) => {
+    // Mock the fetch API call with the expected release structure
+    fetchMock.mockResponseOnce(
+      JSON.stringify([
+        {
+          tag_name: "v1.0.0",
+          draft: false,
+          prerelease: false,
+          assets: [
+            {
+              name: "file.nupkg",
+              browser_download_url:
+                "https://github.com/justgo97/electron-update-test/releases/download/v1.0.0/file.nupkg",
+            },
+          ],
+          body: "Release notes for v1.0.0",
+        },
+      ])
+    );
+
     // Mock setFeedURL to capture the URL and assert it
     electron.autoUpdater.setFeedURL = (data: { url: string }) => {
       try {
         expect(data.url).toContain(
-          "https://github.com/justgo97/electron-update-test/releases/download/"
+          "https://github.com/justgo97/electron-update-test/releases/download/v1.0.0"
         );
         done(); // Signal that the test is complete
       } catch (error) {
