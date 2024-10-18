@@ -54,6 +54,12 @@ interface IUpdateElectronAppOptions {
    *                            check for available updates as soon the app starts.
    */
   checkOnStart?: boolean;
+
+  /**
+   * @param {Boolean} displayChangelog Defaults to `false`.  When enabled the fetched release notes
+   *                             will be displayed on the new update prompt.
+   */
+  displayChangelog?: boolean;
 }
 
 const supportedPlatforms = ["darwin", "win32"];
@@ -74,6 +80,7 @@ class InlineUpdaterClass {
     notifyBeforeApply: true,
     notifyBeforeDownload: true,
     checkOnStart: true,
+    displayChangelog: false,
   };
 
   electronInstance!: typeof electron;
@@ -138,6 +145,8 @@ class InlineUpdaterClass {
     this.options.notifyBeforeDownload =
       opts?.notifyBeforeDownload ?? this.options.notifyBeforeDownload;
     this.options.checkOnStart = opts?.checkOnStart ?? this.options.checkOnStart;
+    this.options.displayChangelog =
+      opts?.displayChangelog ?? this.options.displayChangelog;
 
     assert(this.options.user, "user is required");
 
@@ -294,12 +303,16 @@ class InlineUpdaterClass {
 
     const electronUpdater = this.electronInstance.autoUpdater;
 
+    const updateMessage = this.options.displayChangelog
+      ? `A new version have been released.\n\n${this.releaseNotes}\n`
+      : "A new version is available.";
+
     const dialogOpts: MessageBoxOptions = {
       type: "info",
       buttons: ["Download update", "Later"],
       title: "Application Update",
       message: this.fetchedVersion,
-      detail: `A new version have been released.\n\n${this.releaseNotes}\n`,
+      detail: updateMessage,
       defaultId: 1,
       cancelId: 1,
     };
